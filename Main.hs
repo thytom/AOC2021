@@ -27,7 +27,7 @@ main :: IO ()
 main = do test
 
 runLast :: IO ()
-runLast = do _ <- runTest $ last testmap
+runLast = do _ <- runTest $ last testMap
              return ()
 
 test :: IO ()
