@@ -5,57 +5,48 @@ import TestT
 import Data.List (transpose, nub, sort)
 
 tests = [ Test {name="Day 3 Part 1 Test"  , input="day3_test.txt"  , subject=part1, assert=Just "198"}
-        , Test {name="Day 3 Part 1 Actual", input="day3_actual.txt", subject=part1, assert=Nothing}
+        , Test {name="Day 3 Part 1 Actual", input="day3_actual.txt", subject=part1, assert=Just "3242606"}
         , Test {name="Day 3 Part 2 Test"  , input="day3_test.txt"  , subject=part2, assert=Just "230"}
-        , Test {name="Day 3 Part 2 Actual", input="day3_actual.txt", subject=part2, assert=Nothing}
+        , Test {name="Day 3 Part 2 Actual", input="day3_actual.txt", subject=part2, assert=Just "4856080"}
         ]
 
 parse :: String -> [[Int]]
 parse = map (map (\x-> read [x] :: Int)) . lines
 
-numsToCols = transpose
+-- Count the number of times an element appears in a list
+count :: Eq a => a -> [a] -> Int
+count x = length . filter (==x)
 
-occurs :: Int -> [Int] -> Int
-occurs x xs = length . filter (==x) $ xs
+-- Convert a list into frequencies
+occurences :: (Eq a, Ord a) => [a] -> [(Int, a)]
+occurences xs = sort $ zip (map (\x -> length . filter (==x) $ xs)  (nub xs)) (nub xs)
 
-occurences :: [Int] -> [(Int, Int)]
-occurences xs = sort $ zip (map (\x -> occurs x xs)  (nub xs)) (nub xs)
-
-occ = map occurences . transpose
+-- Order elements in an array by frequency.
+frequencies :: (Eq a, Ord a) => [[a]] -> [[(Int, a)]]
+frequencies = map occurences . transpose
 
 gamma :: [[Int]] -> [Int]
-gamma = map (snd . head) . occ
+gamma = map (snd . head) . frequencies
 
-epsilon =  map (snd . last) . occ
+epsilon :: [[Int]] -> [Int]
+epsilon = map (snd . last) . frequencies
 
-bin2decimal :: [Int] -> Int
-bin2decimal xs = b2d (reverse xs) 0
+-- Simple binary int to decimal converter
+bin2dec :: [Int] -> Int
+bin2dec xs = sum . map (\(val, exp) -> 2^exp * val)
+        . reverse $ zip (reverse xs) [0..]
 
-b2d :: [Int] -> Int -> Int
-b2d [] n = 0
-b2d (x:xs) n = (x * 2^n) + (b2d xs (n+1))
+-- Used to calculate oxygen or co2 depending on the function given.
+-- Gamma = exygen, epsilon = Co2
+p2f [x] _ _ = x
+p2f xs n f = p2f candidates (n+1) f
+        where g = f xs
+              candidates = filter (\x -> (g !! n) /= (x !! n)) xs
 
 part1 :: String -> String
-part1 x = show $  (bin2decimal $ gamma xs) * (bin2decimal $ epsilon xs)
+part1 x = show . product . map (\f-> bin2dec (f xs)) $ [gamma, epsilon]
         where xs = parse x
-
----
-
--- Oxygen generator: Take the gamma, go number-by number until only one candidate remains.
-oxygen xs n = if length candidates > 1
-                 then oxygen candidates (n+1)
-                 else head candidates
-        where g = gamma xs
-              candidates = filter (\x -> (g !! n) /= (x !! n)) xs
-
-co2 xs n = if length candidates > 1
-                 then co2 candidates (n+1)
-                 else head candidates
-        where g = epsilon xs
-              candidates = filter (\x -> (g !! n) /= (x !! n)) xs
 
 part2 :: String -> String
-part2 x = show $ ox * co
+part2 x = show . product . map (bin2dec . p2f xs 0) $ [gamma, epsilon]
         where xs = parse x
-              ox = bin2decimal $ oxygen xs 0
-              co = bin2decimal $ co2 xs 0
