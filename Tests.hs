@@ -1,7 +1,7 @@
 -- This sucks, but it's easier than parsing which function to call from JSON
+{-# LANGUAGE UnicodeSyntax #-}
 module Tests where
 
-import Control.Monad(when)
 import Data.Maybe(fromJust)
 import TestT
 
@@ -22,7 +22,9 @@ testall tm = do putStrLn "Running all tests..."
                 putStrLn . concat $ 
                         ["\n", show count, " tests completed with ", show passes, " pass"
                         , if passes /= 1 then "es" else "", " and ", show fails, " failure"
-                        , if fails /= 1 then "s." else "."]
+                        , if fails /= 1 then "s" else "", 
+                        if fails == 0 then colour (bold ++ green) " \\(^.^)/" else colour (bold++red) " (T_T)",
+                        "."]
 
 runTest :: Test -> IO Bool
 runTest Test{name=day, input=file, subject=f, assert=e} = do 
@@ -32,8 +34,18 @@ runTest Test{name=day, input=file, subject=f, assert=e} = do
         case e of 
           Nothing -> do putStrLn $ "Untested Result of " ++ day ++ ": " ++ res 
                         return True
-          Just s  -> do putStr $ day ++ if s == res then "\tpassed." else " failed."
-                        when (s == res) . putStr $ " Result: " ++ res
-                        putStrLn ""
-                        when (s /= res) . putStrLn .concat $ ["Expected ", show $ fromJust e, " but got ", show res, "."]
+          Just s  -> do putStr $ day ++ "\t" ++ if s == res then colour green "passed." else colour red "failed."
+                        if s == res 
+                           then putStrLn $ " Result: " ++ res
+                           else putStrLn . colour grey . concat $ [" Expected ", show $ fromJust e, " but got ", show res, "."]
                         return (s == res)
+
+-- Ansi colour nonsense
+reset = "\x1b[0m"
+red = "\x1b[31m"
+green = "\x1b[32m"
+bold = "\x1b[1m"
+grey = "\x1b[2m"
+
+colour :: String -> String -> String
+colour c s = c ++ s ++ reset
