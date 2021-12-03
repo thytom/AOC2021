@@ -2,6 +2,13 @@ module Day2.Day2 where
 
 import Control.Monad.State.Lazy
 
+import TestT
+
+tests = [ Test {name="Day 2 Part 1 Test"  , input="day2_test.txt"  , subject=part1, assert=Just "150"}
+        , Test {name="Day 2 Part 1 Actual", input="day2_actual.txt", subject=part1, assert=Just "2117664"}
+        , Test {name="Day 2 Part 2 Test"  , input="day2_test.txt"  , subject=part2, assert=Just "900"}
+        , Test {name="Day 2 Part 2 Actual", input="day2_actual.txt", subject=part2, assert=Just "2073416724"} ]
+
 parse :: String -> ([Int], [Int])
 parse = (\x-> p x ([],[])) . lines
 
