@@ -2,7 +2,7 @@ module Day4.Day4 where
 
 import TestT
 
-import Data.List (transpose)
+import Data.List (transpose, sort)
 import Data.List.Split (chunksOf, splitOn)
 import Control.Monad.State.Lazy
 
@@ -27,34 +27,17 @@ rowfilled ns = all (==True) . map (`elem` ns)
 winningboard :: [Int] -> Board -> Bool
 winningboard ns b = any (==True) . map (any (==True) . map (rowfilled ns)) $ [b, transpose b]
 
+-- Get the sum of all unmarked tiles
 unmarkedsum :: [Int] -> Board -> Int
 unmarkedsum ns = sum . filter (not . (`elem` ns)) . concat
 
-playbingo :: [Board] -> State BingoState BingoResults
-playbingo bs = do (pool, played) <- get
-                  let p = head pool
-                  let w = filter (winningboard (p:played)) bs
-                  put (tail pool, (p:played))
-                  if length w > 0
-                     then return (head w, p)
-                     else playbingo bs
+draws :: [Int] -> [[Int]]
+draws ns = reverse . map (\(d, xs) -> drop d xs) $ zip [0..] $ replicate (length ns) (reverse ns)
 
--- Set subtraction
-without :: Eq a => [a] -> [a] -> [a]
-without as bs = [b | b<-bs, not $ elem b as]
-
--- Last board to win.
-reversebingo :: [Board] -> State BingoState BingoResults
-reversebingo bs = do (pool, played) <- get
-                     let p = head pool
-                     let w = filter (winningboard (p:played)) bs
-                     put (tail pool, (p:played))
-                     -- If we have a winner and there's only one card left in play
-                     if length w > 0 && length bs == 1
-                        then return (head w, p)
-                        else reversebingo (without w bs)
-
-result = (\((winner, n), (_, ns)) -> n * unmarkedsum ns winner)
+-- After how many draws and which number does a board win
+whenwin :: [Int] -> Board -> (Int, Int)
+whenwin ns b = (\(n, (ds, _)) -> (n, ds)) . head . dropWhile (\(n, (ds, w)) -> w==False) . 
+        zip [1..] . zip ns . map (\ns' -> winningboard ns' b) $ (draws ns)
 
 parseboard :: [String] -> Board
 parseboard = map (map (\x -> read x :: Int) . words)
@@ -64,10 +47,16 @@ parse = (\(head:boards) -> (map (\x -> read x :: Int) . splitOn "," $ head,
                                 map (parseboard) . chunksOf 5 $ boards
                              )) . filter (/= []) . lines 
 
+generalbingo f ns = (\(_, n, b) -> n * unmarkedsum (n : takeWhile (/= n) ns) b) . 
+                head . f . map (\b-> (\(x, y) -> (x, y, b)) $ whenwin ns b)
+
+playbingo' = generalbingo (sort)
+reversebingo' = generalbingo (reverse . sort)
+
 part1 :: String -> String
-part1 s = show $ result $ runState (playbingo boards) (ns, [])
+part1 s = show . playbingo' ns $ boards
         where (ns, boards) = parse s
 
 part2 :: String -> String
-part2 s = show $ result $ runState (reversebingo boards) (ns, [])
+part2 s = show . reversebingo' ns $ boards
         where (ns, boards) = parse s
