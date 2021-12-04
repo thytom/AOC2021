@@ -5,10 +5,6 @@ module Tests where
 import Data.Maybe(fromJust)
 import TestT
 
-import Day1.Day1 as Day1
-import Day2.Day2 as Day2
-import Day3.Day3 as Day3
-
 type TestAssert = (String, String, AOCFunc, ExpectedValue)
 type AOCFunc = (String -> String)
 type ExpectedValue = Maybe String

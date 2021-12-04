@@ -1,4 +1,4 @@
-module Day4.Day4 where
+module Days.Day4 where
 
 import TestT
 

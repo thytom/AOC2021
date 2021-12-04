@@ -1,4 +1,4 @@
-module Day2.Day2 where
+module Days.Day2 where
 
 import Control.Monad.State.Lazy
 
