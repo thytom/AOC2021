@@ -25,30 +25,29 @@ rowfilled ns = all (==True) . map (`elem` ns)
 
 -- Checks if a bingo board is winning.
 winningboard :: [Int] -> Board -> Bool
-winningboard ns b = any (==True) . map (any (==True) . map (rowfilled ns)) $ [b, transpose b]
+winningboard ns b = any (==True) . concatMap (map (rowfilled ns)) $ [b, transpose b]
 
 -- Get the sum of all unmarked tiles
 unmarkedsum :: [Int] -> Board -> Int
 unmarkedsum ns = sum . filter (not . (`elem` ns)) . concat
 
 draws :: [Int] -> [[Int]]
-draws ns = reverse . map (\(d, xs) -> drop d xs) $ zip [0..] $ replicate (length ns) (reverse ns)
+draws ns = reverse [drop n (reverse ns) | n <- [0..length ns -1]]
 
 -- After how many draws and which number does a board win
-whenwin :: [Int] -> Board -> (Int, Int)
-whenwin ns b = (\(n, (ds, _)) -> (n, ds)) . head . dropWhile (\(n, (ds, w)) -> w==False) . 
+whenwin :: [Int] -> Board -> (Int, Int, Board)
+whenwin ns b = (\(n, (ds, _)) -> (n, ds, b)) . head . dropWhile (\(n, (ds, w)) -> w==False) . 
         zip [1..] . zip ns . map (\ns' -> winningboard ns' b) $ (draws ns)
 
 parseboard :: [String] -> Board
-parseboard = map (map (\x -> read x :: Int) . words)
+parseboard = map (map (read :: String -> Int) . words)
 
 parse :: String -> ([Int], [Board])
-parse = (\(head:boards) -> (map (\x -> read x :: Int) . splitOn "," $ head,
-                                map (parseboard) . chunksOf 5 $ boards
-                             )) . filter (/= []) . lines 
+parse s = (map (\x -> read x :: Int) $ splitOn "," head, map (parseboard) $ chunksOf 5 boards)
+     where (head:boards) = filter (/= []) . lines $ s
 
 generalbingo f ns = (\(_, n, b) -> n * unmarkedsum (n : takeWhile (/= n) ns) b) . 
-                head . f . map (\b-> (\(x, y) -> (x, y, b)) $ whenwin ns b)
+                head . f . map (whenwin ns)
 
 playbingo' = generalbingo (sort)
 reversebingo' = generalbingo (reverse . sort)
