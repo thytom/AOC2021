@@ -1,12 +1,18 @@
 module Days.Day1 where
 
 import TestT
+
+all = tests ++ run
+
 tests = [ 
-          Test {name = "Day 1 Part 1 Test"  , input = "day1_test.txt"   , subject = part1, assert = Just "7"} 
-        , Test {name = "Day 1 Part 1 Actual", input = "day1_actual.txt" , subject = part1, assert = Just "1681"}
-        , Test {name = "Day 1 Part 2 Test"  , input = "day1_test.txt"   , subject = part2, assert = Just "5"}
-        , Test {name = "Day 1 Part 2 Actual", input = "day1_actual.txt" , subject = part2, assert = Just "1704"}
+          Test {name = "Day 1 Part 1"  , input = "day1_test.txt"   , subject = part1, assert = Just "7"} 
+        , Test {name = "Day 1 Part 2"  , input = "day1_test.txt"   , subject = part2, assert = Just "5"}
         ]
+
+run  = [
+         Test {name = "Day 1 Part 1", input = "day1_actual.txt" , subject = part1, assert = Just "1681"}
+       , Test {name = "Day 1 Part 2", input = "day1_actual.txt" , subject = part2, assert = Just "1704"}
+       ]
 
 part1 :: String -> String
 part1 = p1 . parse

@@ -12,13 +12,15 @@ type AOCFunc = (String -> String)
 type ExpectedValue = Maybe String
 
 testall :: [Test] -> IO ()
-testall tm = do putStrLn "Running all tests..."
+testall tm = do start <- getCPUTime
                 results <- sequence $ map (runTest) tm
+                end <- getCPUTime
+                let time = printf "%.3f seconds"  (fromIntegral (end-start) / (10^12) :: Double) :: String
                 let count  = length results
                 let passes = length $ filter (==True) results
                 let fails  = length $ filter (==False) results
                 putStrLn . concat $ 
-                        ["\n", show count, " tests completed with ", show passes, " pass"
+                        ["\n", show count, " tests completed in ", time, " with ", show passes, " pass"
                         , if passes /= 1 then "es" else "", " and ", show fails, " failure"
                         , if fails /= 1 then "s" else "", 
                         if fails == 0 then colour (bold ++ green) " \\(^.^)/" else colour (bold++red) " (T_T)",
@@ -32,14 +34,16 @@ runTest Test{name=day, input=file, subject=f, assert=e} = do
         let !res = f input
         end <- getCPUTime
         let diff = fromIntegral (end - start) / (1000000000)
-        let profile = printf "%s: %9.3f ms %s: %10s \n" (colour bold "Time") (diff :: Double) (colour bold "Result") res :: String
+        let profile = printf "%s: %15s %s: %9.3f ms %s: %10s" (colour bold "Input") file (colour bold "Time") (diff :: Double) (colour bold "Result") res :: String
         case e of 
-          Nothing -> do printf "%-28s%-18s%s\n" (colour bold day) (colour grey "untested.") profile
+          Nothing -> do printf "%-20s%18s %s" (colour bold day) (colour grey "untested.") profile
+                        putStr "\n"
                         return True
-          Just s  -> do printf "%-28s%-19s" (colour bold day) $ if s == res then colour green "passed." else colour red "failed."
+          Just s  -> do printf "%-20s%19s " (colour bold day) $ if s == res then colour green "passed." else colour red "failed."
+                        putStr profile
                         if s == res 
-                           then putStr profile
-                           else putStrLn . colour grey . concat $ [" Expected ", show $ fromJust e, " but got ", show res, "."]
+                           then putStr "\n"
+                           else putStr $ (colour grey $ " Expected: " ++ show s) ++ "\n"
                         return (s == res)
 
 -- Ansi colour nonsense

@@ -7,11 +7,14 @@ import Data.Map.Strict(insertWith)
 import Data.List(nub)
 
 tests = [ 
-        Test {name="Day 5 Part 1 Test"  , input="day5_test.txt"  , subject=part1, assert=Just "5"},
-        Test {name="Day 5 Part 1 Actual", input="day5_actual.txt", subject=part1, assert=Just "5294"},
-        Test {name="Day 5 Part 2 Test"  , input="day5_test.txt"  , subject=part2, assert=Just "12"},
-        Test {name="Day 5 Part 2 Actual", input="day5_actual.txt", subject=part2, assert=Nothing} 
+          Test {name="Day 5 Part 1"  , input="day5_test.txt"  , subject=part1, assert=Just "5"}
+        , Test {name="Day 5 Part 2"  , input="day5_test.txt"  , subject=part2, assert=Just "12"}
         ]
+
+run = [
+        Test {name="Day 5 Part 1", input="day5_actual.txt", subject=part1, assert=Just "5294"}
+      , Test {name="Day 5 Part 2", input="day5_actual.txt", subject=part2, assert=Nothing} 
+      ]
 
 type Point = (Int, Int)
 type Line = (Point, Point)
