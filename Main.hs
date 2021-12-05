@@ -18,5 +18,5 @@ tmap = concat [ Day1.tests
               ]
 
 main :: IO ()
-main = testall Day5.tests
-        --testall tmap
+main = --testall Day5.tests
+        testall tmap
