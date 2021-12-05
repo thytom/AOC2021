@@ -1,7 +1,9 @@
 -- This sucks, but it's easier than parsing which function to call from JSON
-{-# LANGUAGE UnicodeSyntax #-}
+{-# LANGUAGE UnicodeSyntax, BangPatterns #-}
 module Tests where
 
+import Text.Printf
+import System.CPUTime
 import Data.Maybe(fromJust)
 import TestT
 
@@ -26,13 +28,16 @@ runTest :: Test -> IO Bool
 runTest Test{name=day, input=file, subject=f, assert=e} = do 
         input <- readFile $ ("inputs/" ++ file)
         -- Run the function
-        let res = f input
+        start <- getCPUTime
+        let !res = f input
+        end <- getCPUTime
+        let diff = fromIntegral (end - start) / (1000000000)
         case e of 
-          Nothing -> do putStrLn $ "Untested Result of " ++ day ++ ": " ++ res 
+          Nothing -> do printf "%-28s (Untested)\tResult(%0.3f ms):\t%s\n" (colour bold day) (diff :: Double) res
                         return True
-          Just s  -> do putStr $ day ++ "\t" ++ if s == res then colour green "passed." else colour red "failed."
+          Just s  -> do printf "%-28s%s" (colour bold day) $ if s == res then colour green "passed." else colour red "failed."
                         if s == res 
-                           then putStrLn $ " Result: " ++ res
+                           then printf " %s: %9.3f ms %s: %10s \n" (colour bold "Time") (diff :: Double) (colour bold "Result") res
                            else putStrLn . colour grey . concat $ [" Expected ", show $ fromJust e, " but got ", show res, "."]
                         return (s == res)
 
