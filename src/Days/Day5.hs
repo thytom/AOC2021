@@ -13,7 +13,7 @@ tests = [
 
 run = [
         Test {name="Day 5 Part 1", input="day5_actual.txt", subject=part1, assert=Just "5294"}
-      , Test {name="Day 5 Part 2", input="day5_actual.txt", subject=part2, assert=Nothing} 
+      , Test {name="Day 5 Part 2", input="day5_actual.txt", subject=part2, assert=Just "21698"} 
       ]
 
 type Point = (Int, Int)
