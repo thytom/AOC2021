@@ -24,8 +24,6 @@ parse = map (list2tuple . map (list2tuple . map (read :: String -> Int) . splitO
 is_perpendicular :: Line -> Bool
 is_perpendicular ((x1, y1), (x2, y2)) = any (==True) [x1 == x2, y1 == y2]
 
--- insertWith p 1 map -- increment counter
-
 points :: Line -> [Point]
 points p@((x1, y1), (x2, y2)) 
   | is_perpendicular p = [(x, y) | x <- [min x1 x2..max x1 x2], y <- [min y1 y2..max y1 y2]]
@@ -36,7 +34,7 @@ intersections :: [Line] -> Int
 intersections = length . filter (>1) . DM.elems . Prelude.foldl (\pm p -> insertWith (+) p 1 pm) DM.empty . concatMap (points)
 
 part1 :: String -> String
-part1 input = show $ intersections $ filter (is_perpendicular) $ parse input
+part1 = show . intersections . filter (is_perpendicular) . parse
 
 part2 :: String -> String
-part2 input = show $ intersections $ parse input
+part2 = show . intersections . parse
