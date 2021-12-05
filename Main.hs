@@ -1,3 +1,5 @@
+module Main where
+
 import Tests
 import TestT
 
@@ -16,4 +18,5 @@ tmap = concat [ Day1.tests
               ]
 
 main :: IO ()
-main = testall tmap
+main = testall Day5.tests
+        --testall tmap
