@@ -32,13 +32,11 @@ points p@((x1, y1), (x2, y2))
   | otherwise = [( if x1 > x2 then x1 - n else x1 + n
                  , if y1 > y2 then y1 - n else y1 + n) | n <- [0..(max x1 x2)-(min x1 x2)]]
 
-intersections :: [Point] -> PointMap
-intersections = Prelude.foldl (\pm p -> insertWith (+) p 1 pm) DM.empty
+intersections :: [Line] -> Int
+intersections = length . filter (>1) . DM.elems . Prelude.foldl (\pm p -> insertWith (+) p 1 pm) DM.empty . concatMap (points)
 
 part1 :: String -> String
-part1 input = show . length . filter (>1) . DM.elems . intersections . concatMap (points) $ lines_list
-        where lines_list = filter (is_perpendicular) $ parse input
+part1 input = show $ intersections $ filter (is_perpendicular) $ parse input
 
 part2 :: String -> String
-part2 input = show . length . filter (>1) . DM.elems . intersections . concatMap (points) $ lines_list
-        where lines_list = parse input
+part2 input = show $ intersections $ parse input
