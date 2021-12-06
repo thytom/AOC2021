@@ -4,15 +4,11 @@ import Control.Monad.State.Lazy
 
 import TestT
 
-tests = [ 
-          Test {name="Day 2 Part 1"  , input="day2_test.txt"  , subject=part1, assert=Just "150"}
-        , Test {name="Day 2 Part 2"  , input="day2_test.txt"  , subject=part2, assert=Just "900"}
-        ]
-
-run = [ 
-        Test {name="Day 2 Part 1", input="day2_actual.txt", subject=part1, assert=Just "2117664"}
-      , Test {name="Day 2 Part 2", input="day2_actual.txt", subject=part2, assert=Just "2073416724"}
-      ]
+tests = [ Test {name="Day 2 Part 1", input="day2_test.txt"  , subject=part1, assert=Just "150"}
+        , Test {name="Day 2 Part 2", input="day2_test.txt"  , subject=part2, assert=Just "900"} ]
+run   = [ Test {name="Day 2 Part 1", input="day2_actual.txt", subject=part1, assert=Just "2117664"}
+        , Test {name="Day 2 Part 2", input="day2_actual.txt", subject=part2, assert=Just "2073416724"} ]
+all = tests ++ run
 
 parse :: String -> ([Int], [Int])
 parse = (\x-> p x ([],[])) . lines
@@ -44,14 +40,3 @@ p2 x = do (aim, (horiz, depth)) <- get
                   "forward" -> put (aim, (horiz+val, depth+(aim*val)))
                   "up"      -> put (aim-val, (horiz, depth))
                   "down"    -> put (aim+val, (horiz, depth))
-
--- p2 :: [String] -> State SubmarineState Int
--- p2 [] = do (_, (horiz, depth)) <- get
---            return (horiz * depth)
--- p2 (x:xs) = do (aim, (horiz, depth)) <- get
---                let (dir, val) = (\x -> (head x , (read (last x) :: Int))) $ words x
---                case dir of
---                  "forward" -> do put (aim, (horiz+val, depth+(aim*val)))
---                  "up"      -> do put (aim-val, (horiz, depth))
---                  "down"    -> do put (aim+val, (horiz, depth))
---                p2 xs

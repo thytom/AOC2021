@@ -5,16 +5,10 @@ import TestT
 import Data.List (nub, sort)
 import Data.List.Split (splitOn)
 
-tests = [ 
-          Test {name="Day 6 Part 1"  , input="day6_test.txt"  , subject=part1, assert=Just "5934"}
-        , Test {name="Day 6 Part 2"  , input="day6_test.txt"  , subject=part2, assert=Just "26984457539"}
-        ]
-
-run = [
-          Test {name="Day 6 Part 1", input="day6_actual.txt", subject=part1, assert=Just "351188"}
-        , Test {name="Day 6 Part 2", input="day6_actual.txt", subject=part2, assert=Just "1595779846729"} 
-      ]
-
+tests = [ Test {name="Day 6 Part 1", input="day6_test.txt"  , subject=part1, assert=Just "5934"}
+        , Test {name="Day 6 Part 2", input="day6_test.txt"  , subject=part2, assert=Just "26984457539"} ]
+run   = [ Test {name="Day 6 Part 1", input="day6_actual.txt", subject=part1, assert=Just "351188"}
+        , Test {name="Day 6 Part 2", input="day6_actual.txt", subject=part2, assert=Just "1595779846729"} ]
 all = tests ++ run
 
 -- Convert a list into frequencies

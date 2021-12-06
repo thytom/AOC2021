@@ -6,15 +6,11 @@ import Data.List (transpose, sort)
 import Data.List.Split (chunksOf, splitOn)
 import Control.Monad.State.Lazy
 
-tests = [ 
-           Test {name="Day 4 Part 1"  , input="day4_test.txt"  , subject=part1, assert=Just "4512"}
-        ,  Test {name="Day 4 Part 2"  , input="day4_test.txt"  , subject=part2, assert=Just "1924"}
-        ]
-
-run = [ 
-         Test {name="Day 4 Part 1", input="day4_actual.txt", subject=part1, assert=Just "39902"}
-      ,  Test {name="Day 4 Part 2", input="day4_actual.txt", subject=part2, assert=Just "26936"} 
-      ]
+tests = [ Test {name="Day 4 Part 1", input="day4_test.txt"  , subject=part1, assert=Just "4512"}
+        , Test {name="Day 4 Part 2", input="day4_test.txt"  , subject=part2, assert=Just "1924"} ]
+run   = [ Test {name="Day 4 Part 1", input="day4_actual.txt", subject=part1, assert=Just "39902"}
+        , Test {name="Day 4 Part 2", input="day4_actual.txt", subject=part2, assert=Just "26936"} ]
+all = tests ++ run
 
 type Board = [[Int]]
 

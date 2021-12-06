@@ -10,15 +10,11 @@ import Data.HashTable.ST.Basic as H
 import Control.Monad.ST
 import Control.Monad
 
-tests = [ 
-          Test {name="Day 5 Part 1"  , input="day5_test.txt"  , subject=part1, assert=Just "5"}
-        , Test {name="Day 5 Part 2"  , input="day5_test.txt"  , subject=part2, assert=Just "12"}
-        ]
-
-run = [
-        Test {name="Day 5 Part 1", input="day5_actual.txt", subject=part1, assert=Just "5294"}
-      , Test {name="Day 5 Part 2", input="day5_actual.txt", subject=part2, assert=Just "21698"} 
-      ]
+tests = [ Test {name="Day 5 Part 1", input="day5_test.txt"  , subject=part1, assert=Just "5"}
+        , Test {name="Day 5 Part 2", input="day5_test.txt"  , subject=part2, assert=Just "12"} ]
+run   = [ Test {name="Day 5 Part 1", input="day5_actual.txt", subject=part1, assert=Just "5294"}
+        , Test {name="Day 5 Part 2", input="day5_actual.txt", subject=part2, assert=Just "21698"} ]
+all = tests ++ run
 
 type Point = [Int]
 type Line = [Int]
