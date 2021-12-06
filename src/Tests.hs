@@ -34,7 +34,7 @@ runTest Test{name=day, input=file, subject=f, assert=e} = do
         let !res = f input
         end <- getCPUTime
         let diff = fromIntegral (end - start) / (1000000000)
-        let profile = printf "%s: %15s %s: %9.3f ms %s: %10s" (colour bold "Input") file (colour bold "Time") (diff :: Double) (colour bold "Result") res :: String
+        let profile = printf "%s: %15s %s: %9.3f ms %s: %15s" (colour bold "Input") file (colour bold "Time") (diff :: Double) (colour bold "Result") res :: String
         case e of 
           Nothing -> do printf "%-20s%18s %s" (colour bold day) (colour grey "untested.") profile
                         putStr "\n"
