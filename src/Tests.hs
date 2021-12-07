@@ -5,11 +5,25 @@ module Tests where
 import Text.Printf
 import System.CPUTime
 import Data.Maybe(fromJust)
-import TestT
+
+import TestT as T
+import Days.Day as D
+
+import Days.Day1 as D1
 
 type TestAssert = (String, String, AOCFunc, ExpectedValue)
 type AOCFunc = (String -> String)
 type ExpectedValue = Maybe String
+
+-- Generate tests from a given day.
+testsFrom :: Day -> [Test]
+testsFrom Day {D.name=name, D.part1=part1, D.part2=part2, D.testinput=testinput, D.input=input} 
+  = concat [mkTests name (part1, part2) assert | assert<-[testinput, input]]
+
+mkTests :: String -> (AOCFunc, AOCFunc) -> Assertion -> [Test]
+mkTests name (p1, p2) Assertion{filename=fn, part1_assert=p1a, part2_assert=p2a}
+  = [Test{T.name=name ++ " " ++ n2, T.input=fn, subject=fnc, assert=Just assert} 
+  | (fnc, assert, n2) <- [(p1, p1a, "Part 1"), (p2, p2a, "Part 2")]]
 
 testall :: [Test] -> IO ()
 testall tm = do start <- getCPUTime
@@ -27,7 +41,7 @@ testall tm = do start <- getCPUTime
                         "."]
 
 runTest :: Test -> IO Bool
-runTest Test{name=day, input=file, subject=f, assert=e} = do 
+runTest Test{T.name=day, T.input=file, T.subject=f, T.assert=e} = do 
         input <- readFile $ ("inputs/" ++ file)
         -- Run the function
         start <- getCPUTime

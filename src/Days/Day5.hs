@@ -1,20 +1,20 @@
 module Days.Day5 where
 
-import TestT
+import qualified TestT as T
+import qualified Days.Day as D
+
 import Data.List.Split (splitOn)
 import Text.Regex
 import Data.Maybe(fromJust)
-
 import Data.HashTable.ST.Basic as H
-
 import Control.Monad.ST
 import Control.Monad
 
-tests = [ Test {name="Day 5 Part 1", input="day5_test.txt"  , subject=part1, assert=Just "5"}
-        , Test {name="Day 5 Part 2", input="day5_test.txt"  , subject=part2, assert=Just "12"} ]
-run   = [ Test {name="Day 5 Part 1", input="day5_actual.txt", subject=part1, assert=Just "5294"}
-        , Test {name="Day 5 Part 2", input="day5_actual.txt", subject=part2, assert=Just "21698"} ]
-all = tests ++ run
+day = D.Day { D.name = "Day 5"
+            , D.part1 = part1
+            , D.part2 = part2
+            , D.testinput = T.mkAssertion "day5_test.txt" "5" "12"
+            , D.input     = T.mkAssertion "day5_actual.txt" "5294" "21698"}
 
 type Point = [Int]
 type Line = [Int]

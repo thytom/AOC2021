@@ -1,15 +1,16 @@
 module Days.Day7 where
 
-import TestT
+import qualified TestT as T
+import qualified Days.Day as D
 
 import Data.List.Split (splitOn)
 import Data.List (sort)
 
-tests = [ Test {name="Day 7 Part 1", input="day7_test.txt"  , subject=part1, assert=Just "37"}
-        , Test {name="Day 7 Part 2", input="day7_test.txt"  , subject=part2, assert=Just "168"} ]
-run   = [ Test {name="Day 7 Part 1", input="day7_actual.txt", subject=part1, assert=Just "339321"}
-        , Test {name="Day 7 Part 2", input="day7_actual.txt", subject=part2, assert=Just "95476244"} ]
-all = tests ++ run
+day = D.Day { D.name = "Day 7"
+            , D.part1 = part1
+            , D.part2 = part2
+            , D.testinput = T.mkAssertion "day7_test.txt" "37" "168"
+            , D.input     = T.mkAssertion "day7_actual.txt" "339321" "95476244"}
 
 parse :: String -> [Int]
 parse = map (read) . splitOn "," . head . lines 

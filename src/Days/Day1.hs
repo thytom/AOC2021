@@ -1,12 +1,19 @@
-module Days.Day1 where
+module Days.Day1 (day, tests, run, Days.Day1.all) where
 
-import TestT
+import qualified TestT as T
+import qualified Days.Day as D
 
-tests = [ Test {name = "Day 1 Part 1", input = "day1_test.txt"   , subject = part1, assert = Just "7"} 
-        , Test {name = "Day 1 Part 2", input = "day1_test.txt"   , subject = part2, assert = Just "5"} ]
-run   = [ Test {name = "Day 1 Part 1", input = "day1_actual.txt" , subject = part1, assert = Just "1681"}
-        , Test {name = "Day 1 Part 2", input = "day1_actual.txt" , subject = part2, assert = Just "1704"} ]
+tests = [ T.Test {T.name = "Day 1 Part 1", T.input = "day1_test.txt"  , T.subject = part1, T.assert = Just "7"} 
+        , T.Test {T.name = "Day 1 Part 2", T.input = "day1_test.txt"  , T.subject = part2, T.assert = Just "5"} ]
+run   = [ T.Test {T.name = "Day 1 Part 1", T.input = "day1_actual.txt", T.subject = part1, T.assert = Just "1681"}
+        , T.Test {T.name = "Day 1 Part 2", T.input = "day1_actual.txt", T.subject = part2, T.assert = Just "1704"} ]
 all = tests ++ run
+
+day = D.Day { D.name = "Day 1"
+            , D.part1 = part1
+            , D.part2 = part2
+            , D.testinput = T.mkAssertion "day1_test.txt" "7" "5"
+            , D.input     = T.mkAssertion "day1_actual.txt" "1681" "1704"}
 
 part1 :: String -> String
 part1 = p1 . parse

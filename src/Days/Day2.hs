@@ -2,13 +2,14 @@ module Days.Day2 where
 
 import Control.Monad.State.Lazy
 
-import TestT
+import qualified TestT as T
+import qualified Days.Day as D
 
-tests = [ Test {name="Day 2 Part 1", input="day2_test.txt"  , subject=part1, assert=Just "150"}
-        , Test {name="Day 2 Part 2", input="day2_test.txt"  , subject=part2, assert=Just "900"} ]
-run   = [ Test {name="Day 2 Part 1", input="day2_actual.txt", subject=part1, assert=Just "2117664"}
-        , Test {name="Day 2 Part 2", input="day2_actual.txt", subject=part2, assert=Just "2073416724"} ]
-all = tests ++ run
+day = D.Day { D.name = "Day 2"
+            , D.part1 = part1
+            , D.part2 = part2
+            , D.testinput = T.mkAssertion "day2_test.txt" "150" "900"
+            , D.input     = T.mkAssertion "day2_actual.txt" "2117664" "2073416724"}
 
 parse :: String -> ([Int], [Int])
 parse = (\x-> p x ([],[])) . lines

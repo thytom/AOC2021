@@ -1,15 +1,16 @@
 module Days.Day6 where
 
-import TestT
+import qualified TestT as T
+import qualified Days.Day as D
 
 import Data.List (nub, sort)
 import Data.List.Split (splitOn)
 
-tests = [ Test {name="Day 6 Part 1", input="day6_test.txt"  , subject=part1, assert=Just "5934"}
-        , Test {name="Day 6 Part 2", input="day6_test.txt"  , subject=part2, assert=Just "26984457539"} ]
-run   = [ Test {name="Day 6 Part 1", input="day6_actual.txt", subject=part1, assert=Just "351188"}
-        , Test {name="Day 6 Part 2", input="day6_actual.txt", subject=part2, assert=Just "1595779846729"} ]
-all = tests ++ run
+day = D.Day { D.name = "Day 6"
+            , D.part1 = part1
+            , D.part2 = part2
+            , D.testinput = T.mkAssertion "day6_test.txt" "5934" "26984457539"
+            , D.input     = T.mkAssertion "day6_actual.txt" "351188" "1595779846729"}
 
 -- Convert a list into frequencies
 occurences :: (Eq a, Ord a) => [a] -> [(a, Integer)]
