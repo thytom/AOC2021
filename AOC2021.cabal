@@ -24,7 +24,8 @@ executable AOC2021
                        Days.Day4
                        Days.Day5
                        Days.Day6
-                       -- Days.Day7
+                       Days.Day7
+					   -- Days.Day8
                        Tests
                        TestT
   -- other-extensions:

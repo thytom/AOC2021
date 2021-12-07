@@ -20,7 +20,7 @@ type BingoState = ([Int], [Int])
 type BingoResults = (Board, Int)
 
 rowfilled :: [Int] -> [Int] -> Bool
-rowfilled ns = all (==True) . map (`elem` ns)
+rowfilled ns = Prelude.all (==True) . map (`elem` ns)
 
 -- Checks if a bingo board is winning.
 winningboard :: [Int] -> Board -> Bool
