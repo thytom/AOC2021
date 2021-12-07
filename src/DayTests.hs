@@ -9,6 +9,8 @@ import qualified Days.Day4 as Day4
 import qualified Days.Day5 as Day5
 import qualified Days.Day6 as Day6
 import qualified Days.Day7 as Day7
+import qualified Days.Day8 as Day8
+--import qualified Days.Day9 as Day9
 
 days = [ Day1.day
        , Day2.day
@@ -17,6 +19,8 @@ days = [ Day1.day
        , Day5.day
        , Day6.day
        , Day7.day
+       , Day8.day
+--       , Day9.day
        ]
 
 allTests = concatMap (take 2 . testsFrom) $ init days

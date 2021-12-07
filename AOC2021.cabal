@@ -18,14 +18,16 @@ extra-source-files:  README.md
 
 executable AOC2021
   main-is:             Main.hs
-  other-modules:       Days.Day1
+  other-modules:       Days.Day
+                       Days.Day1
                        Days.Day2
                        Days.Day3
                        Days.Day4
                        Days.Day5
                        Days.Day6
                        Days.Day7
-					   -- Days.Day8
+                       Days.Day8
+                       DayTests
                        Tests
                        TestT
   -- other-extensions:
