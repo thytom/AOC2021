@@ -9,8 +9,6 @@ import Data.Maybe(fromJust)
 import TestT as T
 import Days.Day as D
 
-import Days.Day1 as D1
-
 type TestAssert = (String, String, AOCFunc, ExpectedValue)
 type AOCFunc = (String -> String)
 type ExpectedValue = Maybe String
