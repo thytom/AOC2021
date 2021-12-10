@@ -46,12 +46,12 @@ runTest Test{T.name=day, T.input=file, T.subject=f, T.assert=e} = do
         let !res = f input
         end <- getCPUTime
         let diff = fromIntegral (end - start) / (1000000000)
-        let profile = printf "%s: %15s %s: %9.3f ms %s: %15s" (colour bold "Input") file (colour bold "Time") (diff :: Double) (colour bold "Result") res :: String
+        let profile = printf "%s: %17s %s: %9.3f ms %s: %15s" (colour bold "Input") file (colour bold "Time") (diff :: Double) (colour bold "Result") res :: String
         case e of 
-          Nothing -> do printf "%-20s%18s %s" (colour bold day) (colour grey "untested.") profile
+          Nothing -> do printf "%-21s%18s %s" (colour bold day) (colour grey "untested.") profile
                         putStr "\n"
                         return True
-          Just s  -> do printf "%-20s%19s " (colour bold day) $ if s == res then colour green "passed." else colour red "failed."
+          Just s  -> do printf "%-21s%19s " (colour bold day) $ if s == res then colour green "passed." else colour red "failed."
                         putStr profile
                         if s == res 
                            then putStr "\n"
