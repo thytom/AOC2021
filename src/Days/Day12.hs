@@ -25,7 +25,7 @@ type Path = [Node String]
 parse :: String -> Graph
 parse input = (nodes, edges)
         where nodes = map (readnode) . nub . splitOn "-" . intercalate "-" . lines $ input
-              edges = concat . map (combs . map (readnode) . splitOn "-") . lines $ input
+              edges = filter ((/=START).snd) . concat . map (combs . map (readnode) . splitOn "-") . lines $ input
 
 combs :: [a] -> [(a, a)]
 combs [] = []
@@ -44,22 +44,23 @@ isSmall (Small a) = True
 isSmall _         = False
 
 countPaths :: Node String -> Graph -> [Node String] -> Int
-countPaths n grph vst = snd $ runState (countps n grph vst) 0
+countPaths n grph vst = sum $ countps n grph vst
 
 countPaths' :: Node String -> Graph -> [Node String] -> Int
-countPaths' n grph vst = snd $ runState (countps' n grph vst False) 0
+countPaths' n grph vst = sum $ countps' n grph vst False
 
-countps :: Node String -> Graph -> [Node String] -> State Int ()
-countps END _ _ = do count <- get
-                     put (count +1)
-countps n grph@(vs, es) vst = forM_ fromHere $ \e -> countps e grph (n:vst)
-        where fromHere = map (snd) . filter (\(_,x)->x /= START && not (isSmall x && x `elem` vst)) . filter ((==n) . fst ) $ es -- Where can we get to from here?
+countps :: Node String -> Graph -> [Node String] -> [Int]
+countps END _ _ = [1]
+countps n grph@(vs, es) vst = concatMap (\e -> countps e grph (if isSmall n then n:vst else vst)) fromHere
+       where fromHere = map (snd) . filter (\(n',x)-> n == n' && not (x `elem` vst)) $ es -- Where can we get to from here?
 
-countps' :: Node String -> Graph -> [Node String] -> Bool -> State Int ()
-countps' END _ _ _ = do count <- get
-                        put (count +1)
-countps' n grph@(vs, es) vst doubleUsed = forM_ fromHere $ \e -> countps' e grph (n:vst) (doubleUsed || if isSmall e then e `elem` vst else False)
-        where fromHere = map (snd) . filter (\(_,x)->x /= START && not (isSmall x && x `elem` vst && doubleUsed)) . filter ((==n) . fst ) $ es -- Where can we get to from here?
+-- Exclude large nums from the list. Eliminating any edges that result in going back to START should also prevent hat.
+countps' :: Node String -> Graph -> [Node String] -> Bool -> [Int]
+countps' END _ _ _ = [1]
+countps' n grph@(vs, es) vst doubleUsed = concatMap (\e -> countps' e grph (if isSmall n then n:vst else vst) (doubleUsed || e `elem` vst)) fromHere
+        where fromHere 
+                | doubleUsed = map (snd) . filter (\(n',x)->n'==n && not (x `elem` vst)) $ es -- Where can we get to from here?
+                | otherwise  = map (snd) . filter (\(n',x)->n'==n) $ es
 
 part1 :: String -> String
 part1 input = show $ countPaths START grph []
@@ -68,7 +69,3 @@ part1 input = show $ countPaths START grph []
 part2 :: String -> String
 part2 input = show $ countPaths' START grph []
         where grph = parse input
-
-test :: IO ()
-test = do input <- readFile "inputs/day12_actual.txt"
-          putStrLn $ part2 input
