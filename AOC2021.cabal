@@ -30,6 +30,7 @@ executable AOC2021
                        Days.Day9
                        Days.Day10
                        Days.Day11
+                       Days.Day12
                        DayTests
                        Tests
                        TestT
