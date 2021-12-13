@@ -5,6 +5,7 @@ module Tests where
 import Text.Printf
 import System.CPUTime
 import Data.Maybe(fromJust)
+import Control.Monad(unless)
 
 import TestT as T
 import Days.Day as D
@@ -24,39 +25,71 @@ mkTests name (p1, p2) Assertion{filename=fn, part1_assert=p1a, part2_assert=p2a}
   | (fnc, assert, n2) <- [(p1, p1a, "Part 1"), (p2, p2a, "Part 2")]]
 
 testall :: [Test] -> IO ()
-testall tm = do start <- getCPUTime
-                results <- sequence $ map (runTest) tm
-                end <- getCPUTime
-                let time = printf "%.3f seconds"  (fromIntegral (end-start) / (10^12) :: Double) :: String
-                let count  = length results
-                let passes = length $ filter (==True) results
-                let fails  = length $ filter (==False) results
-                putStrLn . concat $ 
-                        ["\n", show count, " tests completed in ", time, " with ", show passes, " pass"
-                        , if passes /= 1 then "es" else "", " and ", show fails, " failure"
-                        , if fails /= 1 then "s" else "", 
-                        if fails == 0 then colour (bold ++ green) " \\(^.^)/" else colour (bold++red) " (T_T)",
-                        "."]
+testall tm = testlist tm (runTest)
 
-runTest :: Test -> IO Bool
+-- No fancy testing, just sees if it passes
+assertall :: [Test] -> IO ()
+assertall tm = testlist tm (run)
+
+-- How many times to repeat for an average
+repeats = 5
+
+testlist :: [Test] -> (Test -> IO (Bool, Double)) -> IO ()
+testlist tm f = do ress <- sequence $ map (f) tm
+                   let time = printf "%.3f" (sum $ map (snd) ress)
+                   let results = map (fst) ress
+                   let count  = length results
+                   let passes = length $ filter (==True) results
+                   let fails  = length $ filter (==False) results
+                   putStrLn . concat $ 
+                           [show count, " tests completed in ", time, " milliseconds with ", show passes, " pass"
+                           , if passes /= 1 then "es" else "", " and ", show fails, " failure"
+                           , if fails /= 1 then "s" else "", 
+                           if fails == 0 then colour (bold ++ green) " \\(^.^)/" else colour (bold++red) " (T_T)",
+                           "."]
+
+run :: Test -> IO (Bool, Double)
+run Test{T.name=day, T.input=file, T.subject=f, T.assert=e} = do
+        input <- readFile $ ("inputs/" ++ file)
+        let assert = fromJust e
+        (res, dur) <- time f input
+        unless (assert == res) $ printf "%s %s: Expected %s but got %s\n" (colour bold day) (colour red "failed") assert res
+        return $ (assert == res, dur)
+
+runTest :: Test -> IO (Bool, Double)
 runTest Test{T.name=day, T.input=file, T.subject=f, T.assert=e} = do 
         input <- readFile $ ("inputs/" ++ file)
-        -- Run the function
-        start <- getCPUTime
-        let !res = f input
-        end <- getCPUTime
-        let diff = fromIntegral (end - start) / (1000000000)
-        let profile = printf "%s: %17s %s: %9.3f ms %s: %15s" (colour bold "Input") file (colour bold "Time") (diff :: Double) (colour bold "Result") res :: String
-        case e of 
-          Nothing -> do printf "%-21s%18s %s" (colour bold day) (colour grey "untested.") profile
-                        putStr "\n"
-                        return True
-          Just s  -> do printf "%-21s%19s " (colour bold day) $ if s == res then colour green "passed." else colour red "failed."
-                        putStr profile
-                        if s == res 
-                           then putStr "\n"
-                           else putStr $ (colour grey $ " Expected: " ++ show s) ++ "\n"
-                        return (s == res)
+        let assert = fromJust e
+        (res, diff) <- time f input 
+        if assert == res
+           then do times_ <- sequence [time f input | _<-[0..repeats]]
+                   let times = map snd times_
+                   print_passed day (maximum times) (minimum times) (average times) res
+                   return (True, average times)
+
+           else do print_failed day res assert
+                   return (False, 0)
+
+print_passed :: String -> Double -> Double -> Double -> String -> IO ()
+print_passed name worst avg best result =
+        printf "%-21s%19s %s: %9.3f ms %9.3f ms %9.3f ms %s: %15s\n"
+               (colour bold name) (colour green "passed.") (colour bold "Bst/Avg/Wst") best avg worst
+               (colour bold "Result") result
+
+
+print_failed :: String -> String -> String -> IO ()
+print_failed name result expected =
+        printf "%-21s%19s %s: %15s (%s)\n"
+               (colour bold name) (colour red "failed.") (colour bold "Result") result (colour grey ("Expected " ++ expected))
+
+average :: [Double] -> Double
+average ns = sum ns / fromIntegral (length ns)
+
+time :: AOCFunc -> String -> IO (String, Double)
+time t input = do start <- getCPUTime
+                  let !res = t input
+                  end <- getCPUTime
+                  return (res, fromIntegral (end-start) / 1000000000)
 
 -- Ansi colour nonsense
 reset = "\x1b[0m"

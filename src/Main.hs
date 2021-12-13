@@ -5,12 +5,22 @@ import TestT
 
 import DayTests
 
+import System.Environment
+
 main :: IO ()
 main = do 
-        putStrLn "Running all completed day tests..."
-        testall allTests
-        putStrLn "Running all completed days..."
-        testall allRun
-        putStrLn "Running current day..."
-        testall currentDay
-        putStrLn "Done."
+        args <- getArgs
+        case args of
+          [] -> do putStrLn "Defaulting to current day..."
+                   testall currentDay
+          ["tests"]      -> do putStrLn "Running all tests..."
+                               assertall allTests
+          ["days"]       -> do putStrLn "Running all days..."
+                               testall allRun
+          ["everything"] -> do putStrLn "Running all tests..."
+                               assertall allTests
+                               putStrLn "Running all days..."
+                               testall allRun
+          ["current"]    -> do putStrLn "Running current day..."
+                               testall currentDay
+          _              -> putStrLn "Incorrect arguments. Valid arguments: tests, days, everything, current"

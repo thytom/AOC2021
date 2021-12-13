@@ -29,9 +29,9 @@ days = [ Day1.day
        , Day12.day
        ]
 
-allTests = concatMap (take 2 . testsFrom) $ init days
+allTests = concatMap (take 2 . testsFrom) days
 
-allRun = concatMap (drop 2 . testsFrom) $ init days
+allRun = concatMap (drop 2 . testsFrom) days
 
 currentDay = testsFrom $ last days
 
