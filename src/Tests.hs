@@ -64,7 +64,7 @@ runTest Test{T.name=day, T.input=file, T.subject=f, T.assert=e} = do
         if assert == res
            then do times_ <- sequence [time f input | _<-[0..repeats]]
                    let times = map snd times_
-                   print_passed day (maximum times) (minimum times) (average times) res
+                   print_passed day (maximum times) (average times) (minimum times) res
                    return (True, average times)
 
            else do print_failed day res assert

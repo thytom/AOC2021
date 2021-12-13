@@ -31,10 +31,11 @@ executable AOC2021
                        Days.Day10
                        Days.Day11
                        Days.Day12
+                       Days.Day13
                        DayTests
                        Tests
                        TestT
   -- other-extensions:
-  build-depends:       base >=4.15 && <4.16, split, mtl, containers, regex-compat, hashtables, unordered-containers
+  build-depends:       base >=4.15 && <4.16, split, mtl, containers, regex-compat, hashtables, unordered-containers 
   hs-source-dirs:        src
   default-language:    Haskell2010
