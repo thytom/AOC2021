@@ -41,8 +41,8 @@ points :: Line -> [Point]
 points p@[x1, y1, x2, y2]
   | vertical p   = zip [x1, x1..] [min y1 y2..max y1 y2]
   | horizontal p = zip [min x1 x2..max x1 x2] [y1, y1..]
-  | otherwise = zip [x1 , x1 + xcomp..x1 + xcomp * ((max x1 x2) - (min x1 x2))] 
-                    [y1 , y1 + ycomp..y1 + ycomp * ((max y1 y2) - (min y1 y2))] 
+  | otherwise = zip [x1, x1 + xcomp..x1 + xcomp * ((max x1 x2) - (min x1 x2))] 
+                    [y1, y1 + ycomp..y1 + ycomp * ((max y1 y2) - (min y1 y2))] 
         where xcomp = (x2 - x1) `div` (abs (x2 - x1))
               ycomp = (y2 - y1) `div` (abs (y2 - y1))
 
@@ -58,7 +58,7 @@ intersections ps = runST $ do ht1 <- newSized (length ps)
                               return sz
 
 part1 :: String -> String
-part1 = show . intersections . concatMap points . filter (is_perpendicular) . parse
+part1 = show . intersections . (>>=points) . filter (is_perpendicular) . parse
 
 part2 :: String -> String
-part2 = show . intersections . concatMap points . parse
+part2 = show . intersections . (>>=points) . parse
