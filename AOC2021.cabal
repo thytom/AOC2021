@@ -17,6 +17,7 @@ build-type:          Simple
 extra-source-files:  README.md
 
 executable AOC2021
+  ghc-options: -fllvm
   main-is:             Main.hs
   other-modules:       Days.Day
                        Days.Day1
