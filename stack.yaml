@@ -36,6 +36,8 @@ packages:
 # forks / in-progress versions pinned to a git hash. For example:
 #
 # extra-deps:
+# - llvm-base-3.2.0.2@sha256:4c6cc3ab336bf885d7fccad3515f078d5edcea2afc7c456780a753edb2a69040,3120
+# - type-level-0.3.0@sha256:582b33e72c8e9f40df856eb2fb5c695a40dbd98571daaaff453c51dd31e87017,2499
 # - acme-missiles-0.3
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
